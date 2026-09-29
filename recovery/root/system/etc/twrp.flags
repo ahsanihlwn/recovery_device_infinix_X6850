@@ -35,5 +35,5 @@
 /tee			emmc		/dev/block/by-name/tee											flags=display=tee;slotselect
 
 # Removable Storage
-/sdcard1     	auto		/dev/block/mmcblk1p1				/dev/block/mmcblk1						flags=fsflags=utf8;display="MicroSD";storage;wipeingui;removable
+/external_sd     	auto		/dev/block/mmcblk1p1				/dev/block/mmcblk1						flags=fsflags=utf8;display="MicroSD";storage;wipeingui;removable
 /usb-otg		auto		/dev/block/sda1					/dev/block/sda		/dev/block/sdd1			flags=fsflags=utf8;display="USB-Storage";storage;wipeingui;removable
