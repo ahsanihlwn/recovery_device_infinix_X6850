@@ -71,18 +71,6 @@ PRODUCT_TARGET_VNDK_VERSION := 34
 PRODUCT_VENDOR_PROPERTIES += \
     ro.twrp.vendor_boot=true
 
-# System Properties
-PRODUCT_SYSTEM_PROPERTIES += \
-    ro.postinstall.fstab.prefix=/system \
-    ro.sys.usb.storage.type?=mtp \
-    ro.crypto.volume.filenames_mode=aes-256-cts \
-    ro.hardware.gatekeeper=trustonic \
-    ro.hardware.kmsetkey=trustonic \
-    ro.vendor.mtk_svp_on_mtee_support=1 \
-    ro.vendor.mtk_tee_gp_support=1 \
-    ro.vendor.mtk_trustonic_tee_support=1 \
-    keymaster_ver=4.1
-
 PRODUCT_PACKAGES_DEBUG += \
     bootctl
 
