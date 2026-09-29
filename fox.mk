@@ -22,8 +22,7 @@ OF_SUPPORT_VBMETA_AVB2_PATCHING := 1
 OF_FORCE_PREBUILT_KERNEL := 1
 OF_USE_GREEN_LED := 0
 
-# Disable flashlight.
-# (The device uses ioctl call to /dev/flashlight instead of traditional sysfs write.)
+# Flashlight
 OF_FLASHLIGHT_ENABLE := 1
 
 OF_MAINTAINER := R
