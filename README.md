@@ -1,4 +1,4 @@
-## OrangeFox device tree for Infinix HOT 60i (_X6728_)
+## OrangeFox device tree for Infinix (_X6850_)
 
 ## Device picture
 
@@ -48,7 +48,7 @@ Clone the device tree:
 
 ```
 cd ~/YOUR/PATH/HERE
-git clone https://github.com/Andrikurn/fox_device_infinix_X6728.git -b fox_14.1 ./device/infinix/X6728
+git clone https://github.com/Andrikurn/fox_device_infinix_X6850.git -b fox_14.1 ./device/infinix/X6850
 ```
 
 Build:
@@ -56,5 +56,5 @@ Build:
 ```
 export ALLOW_MISSING_DEPENDENCIES=true
 source build/envsetup.sh
-lunch fox_X6728-ap2a-eng && mka adbd vendorbootimage
+lunch fox_X6850-ap2a-eng && mka adbd vendorbootimage
 ```

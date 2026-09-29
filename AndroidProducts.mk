@@ -5,4 +5,4 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/fox_X6728.mk
+    $(LOCAL_DIR)/fox_X6850.mk
