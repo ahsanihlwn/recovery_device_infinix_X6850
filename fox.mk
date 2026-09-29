@@ -24,6 +24,6 @@ OF_USE_GREEN_LED := 0
 
 # Disable flashlight.
 # (The device uses ioctl call to /dev/flashlight instead of traditional sysfs write.)
-OF_FLASHLIGHT_ENABLE := 0
+OF_FLASHLIGHT_ENABLE := 1
 
-OF_MAINTAINER := Andriann.
+OF_MAINTAINER := R
