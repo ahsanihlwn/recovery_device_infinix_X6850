@@ -6,16 +6,40 @@ on init
 	setprop sys.usb.controller "musb-hdrc"
     setprop sys.usb.ffs.aio_compat 1
 	setprop crypto.ready 1
-	
-	# Manually set ro.board.api_level to avoid keymint crashing because of this prop being empty.
-	setprop ro.board.api_level 202404
-	
+
 	start vendor.boot-default
 	
 on fs
-	write /proc/bootprof "INIT:fs"
+    wait /dev/block/platform/soc/11270000.ufshci
+    symlink /dev/block/platform/soc/11270000.ufshci /dev/block/bootdevice
 	install_keyring
-    start adbd
+
+on property:persist.vendor.mtk.pl_lnk=1
+    symlink /dev/block/mapper/pl_a /dev/block/by-name/preloader_raw_a
+    symlink /dev/block/mapper/pl_b /dev/block/by-name/preloader_raw_b
+    symlink /dev/block/mapper/pl_a /dev/block/platform/bootdevice/by-name/preloader_raw_a
+    symlink /dev/block/mapper/pl_b /dev/block/platform/bootdevice/by-name/preloader_raw_b
+
+    symlink /dev/block/by-name/lk1 /dev/block/by-name/bootloader1
+    symlink /dev/block/by-name/lk2 /dev/block/by-name/bootloader2
+
+on property:vendor.mtk.boot0_linka=1
+    symlink /dev/block/sda /dev/block/mmcblk0boot0
+
+on property:vendor.mtk.boot0_linkb=1
+    symlink /dev/block/sdb /dev/block/mmcblk0boot0
+
+on property:vendor.mtk.boot0_linkc=1
+    symlink /dev/block/sdc /dev/block/mmcblk0boot0
+
+on property:vendor.mtk.boot1_linka=1
+    symlink /dev/block/sda /dev/block/mmcblk0boot1
+
+on property:vendor.mtk.boot1_linkb=1
+    symlink /dev/block/sdb /dev/block/mmcblk0boot1
+
+on property:vendor.mtk.boot1_linkc=1
+    symlink /dev/block/sdc /dev/block/mmcblk0boot1
 
 on property:ro.crypto.state=encrypted && property:ro.boot.dynamic_partitions=true
 	start mobicore
@@ -51,7 +75,6 @@ service vendor.boot-default /system/bin/hw/android.hardware.boot-service.mtk
     group root
     interface aidl android.hardware.boot.IBootControl/default
     seclabel u:r:recovery:s0
-
 
 # Override Health HAL service definition.
 service vendor.health-default /system/bin/hw/android.hardware.health-service.example_recovery
