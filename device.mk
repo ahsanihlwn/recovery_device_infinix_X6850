@@ -104,6 +104,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.security.keymint-V3-ndk
 
+# libc++ compat shim
+PRODUCT_PACKAGES += \
+    libcxx_verbose_abort_shim
+
 # MTK plpath utils
 PRODUCT_PACKAGES += \
     mtk_plpath_utils \
