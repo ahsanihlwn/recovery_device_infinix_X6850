@@ -103,14 +103,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.security.keymint-V3-ndk
 
-# libc++ compat shim
+# create_pl_dev
 PRODUCT_PACKAGES += \
-    libcxx_verbose_abort_shim
-
-# MTK plpath utils
-PRODUCT_PACKAGES += \
-    mtk_plpath_utils \
-    mtk_plpath_utils.recovery
+    create_pl_dev \
+    create_pl_dev.recovery
 
 # Update engine
 PRODUCT_PACKAGES += \
