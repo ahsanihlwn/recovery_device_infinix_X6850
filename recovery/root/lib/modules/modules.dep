@@ -1,6 +1,3 @@
-/lib/modules/adaptive-ts.ko:
-/lib/modules/focaltech_ft3683g.ko: /lib/modules/adaptive-ts.ko
-/lib/modules/gt9916_common.ko: /lib/modules/adaptive-ts.ko
 /lib/modules/mtk-scpsys-mt6789.ko: /lib/modules/mtk-scpsys.ko /lib/modules/clk-common.ko /lib/modules/aee_aed.ko
 /lib/modules/nt37703a_fhdp_dsi_vdo_dsc_tm_tm_144hz_x6855.ko: /lib/modules/mtk_panel_ext.ko
 /lib/modules/mt6577_auxadc.ko:
