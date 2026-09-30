@@ -87,7 +87,6 @@ PRODUCT_PACKAGES += \
 
 # Security
 PRODUCT_PACKAGES += \
-    android.hardware.security.rkp-V1-ndk \
     android.hardware.security.rkp-V3-ndk \
     android.hardware.security.secureclock-V1-ndk \
     android.hardware.security.sharedsecret-V1-ndk
