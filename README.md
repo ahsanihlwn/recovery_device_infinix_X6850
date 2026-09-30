@@ -60,5 +60,5 @@ Build:
 
 ```
 source build/envsetup.sh
-lunch fox_X6850-ap2a-eng && mka adbd vendorbootimage
+lunch twrp_X6850-ap2a-eng && mka adbd vendorbootimage
 ```

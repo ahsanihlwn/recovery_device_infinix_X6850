@@ -17,7 +17,7 @@ $(call inherit-product, device/infinix/X6850/twrp.mk)
 $(call inherit-product, device/infinix/X6850/fox.mk)
 
 # Product Specifics
-PRODUCT_NAME := fox_X6850
+PRODUCT_NAME := twrp_X6850
 PRODUCT_DEVICE := X6850
 PRODUCT_BRAND := Infinix
 PRODUCT_MODEL := Infinix X6850
