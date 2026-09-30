@@ -58,8 +58,8 @@ service vendor.keymint-trustonic /vendor/bin/hw/android.hardware.security.keymin
 	group root
     seclabel u:r:recovery:s0
 
-# MTK AIDL Boot HAL
-service vendor.boot-default /vendor/bin/hw/android.hardware.boot-service.mtk
+# AIDL Boot HAL
+service vendor.boot-default /system/bin/hw/android.hardware.boot-service.default
     class early_hal
     user root
     group root

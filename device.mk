@@ -107,6 +107,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libcxx_verbose_abort_shim
 
+# AIDL Boot HAL (AOSP default, replaces MTK prebuilt)
+PRODUCT_PACKAGES += \
+    android.hardware.boot-service.default_recovery
+
 # MTK plpath utils
 PRODUCT_PACKAGES += \
     mtk_plpath_utils \
