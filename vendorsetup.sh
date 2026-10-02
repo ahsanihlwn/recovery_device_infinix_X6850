@@ -21,40 +21,45 @@
 
 device_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 workspace_root="$(cd "${device_dir}/../../.." && pwd)"
-vibration_patch_file="${device_dir}/patches/01-patch-vibration.patch"
-health_patch_file="${device_dir}/patches/02-patch-health-hal.patch"
+patch_files=(
+    "${device_dir}/patches/01-patch-vibration.patch"
+    "${device_dir}/patches/02-patch-health-hal.patch"
+    "${device_dir}/patches/03-patch-vendor-boot-postprocess.patch"
+)
 
 export ALLOW_MISSING_DEPENDENCIES=true
-
 export FOX_BUILD_DEVICE=X6850
 export FOX_VIRTUAL_AB_DEVICE=1
 export FOX_VENDOR_BOOT_RECOVERY=1
-export FOX_INSTALLER_VENDOR_BOOT_RAMDISK_INSTALL=1
+export FOX_INSTALLER_VENDOR_BOOT_RAMDISK_INSTALL=0
+export FOX_VENDOR_BOOT_POSTPROCESS_SCRIPT="${device_dir}/tools/postprocess_vendor_boot.sh"
 export FOX_USE_ZSTD_BINARY=1
 export FOX_USE_DMSETUP=1
 
-if [[ ! -f "${health_patch_file}" ]]; then
-    echo "[X6850] Missing patch: ${health_patch_file}"
-elif [[ ! -f "${vibration_patch_file}" ]]; then
-    echo "[X6850] Missing patch: ${vibration_patch_file}"
-elif ! command -v patch >/dev/null 2>&1; then
-    echo "[X6850] Missing required command: patch"
-elif (
-    cd "${workspace_root}" &&
-	patch -p1 -N --dry-run --silent < "${vibration_patch_file}" >/dev/null 2>&1
-    patch -p1 -N --dry-run --silent < "${health_patch_file}" >/dev/null 2>&1
-); then
-    if (
-        cd "${workspace_root}" &&
-		patch -p1 -N --silent < "${vibration_patch_file}" >/dev/null 2>&1
-        patch -p1 -N --silent < "${health_patch_file}" >/dev/null 2>&1
-    ); then
-        echo "[X6850] Applied patches."
-    else
-        echo "[X6850] Failed to apply patches."
+patches_ok=true
+for patch_file in "${patch_files[@]}"; do
+    if [[ ! -f "${patch_file}" ]] || ! command -v patch >/dev/null 2>&1; then
+        echo "[X6850] Missing patch or patch command: ${patch_file}"
+        patches_ok=false
+        break
     fi
-else
-    echo "[X6850] Patches already applied or not applicable"
-fi
+    if (cd "${workspace_root}" && patch -p1 -N --dry-run --silent < "${patch_file}" >/dev/null 2>&1); then
+        if ! (cd "${workspace_root}" && patch -p1 -N --silent < "${patch_file}"); then
+            patches_ok=false
+            break
+        fi
+        echo "[X6850] Applied $(basename "${patch_file}")."
+    elif (cd "${workspace_root}" && patch -p1 -R --dry-run --silent < "${patch_file}" >/dev/null 2>&1); then
+        echo "[X6850] Already applied $(basename "${patch_file}")."
+    else
+        echo "[X6850] Patch does not apply: ${patch_file}"
+        patches_ok=false
+        break
+    fi
+done
 
-unset device_dir workspace_root patch_file
+if [[ "${patches_ok}" != true ]]; then
+    unset device_dir workspace_root patch_files patch_file patches_ok
+    return 1
+fi
+unset device_dir workspace_root patch_files patch_file patches_ok

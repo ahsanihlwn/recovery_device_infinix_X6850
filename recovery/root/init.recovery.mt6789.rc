@@ -1,6 +1,9 @@
 import /init.tee.rc
 
 on init
+    insmod /lib/modules/touch/adaptive-ts.ko
+    insmod /lib/modules/touch/gt9916_common.ko
+    insmod /lib/modules/touch/focaltech_ft3683g.ko
     export LD_LIBRARY_PATH /system/lib64:/vendor/lib64
 	setprop sys.usb.configfs 1
 	setprop sys.usb.controller "musb-hdrc"

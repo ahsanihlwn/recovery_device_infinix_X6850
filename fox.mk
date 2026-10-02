@@ -25,4 +25,4 @@ OF_USE_GREEN_LED := 0
 # Flashlight
 OF_FLASHLIGHT_ENABLE := 1
 
-OF_MAINTAINER := R
+OF_MAINTAINER := ahsanihlwn

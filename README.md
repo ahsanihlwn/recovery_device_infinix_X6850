@@ -56,9 +56,12 @@ cd ~/fox_14.1
 git clone https://github.com/ardiandideyashidiq/recovery_device_infinix_X6850.git -b fox_14.1 ./device/infinix/X6850
 ```
 
+Provide the stock vendor_boot image from the matching firmware locally.
+
 Build:
 
 ```
+export FOX_X6850_STOCK_VENDOR_BOOT_IMAGE=/path/to/stock/vendor_boot.img
 source build/envsetup.sh
 lunch twrp_X6850-ap2a-eng && mka adbd vendorbootimage
 ```

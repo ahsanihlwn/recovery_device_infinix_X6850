@@ -13,3 +13,5 @@
 *.h         text eol=lf
 *.xml       text eol=lf
 *.prop      text eol=lf
+
+recovery/root/vendor/firmware/Conf_MultipleTest.ini -text
