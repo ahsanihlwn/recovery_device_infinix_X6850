@@ -17,7 +17,6 @@ service mobicore /vendor/bin/mcDriverDaemon --P1 /mnt/vendor/persist/mcRegistry 
 	-r /vendor/app/mcRegistry/035c0000000000000000000000000000.drbin \
 	-r /vendor/app/mcRegistry/036c0000000000000000000000000000.drbin \
 	-r /vendor/app/mcRegistry/037c0000000000000000000000000000.drbin \
-	-r /vendor/app/mcRegistry/40188311faf343488db888ad39496f9a.drbin \
 	-r /vendor/app/mcRegistry/090b0000000000000000000000000000.drbin \
 	-r /vendor/app/mcRegistry/0f5eed3c3b5a47afacca69a84bf0efad.drbin \
 	-r /vendor/app/mcRegistry/07060000000000000000000000007169.drbin \
@@ -28,7 +27,9 @@ service mobicore /vendor/bin/mcDriverDaemon --P1 /mnt/vendor/persist/mcRegistry 
 	-r /vendor/app/mcRegistry/9073f03a9618383bb1856eb3f990babd.drbin \
 	-r /vendor/app/mcRegistry/6b3f5fa0f8cf55a7be2582587d62d63a.drbin \
 	-r /vendor/app/mcRegistry/5020170115e016302017012521300000.drbin \
-	-r /vendor/app/mcRegistry/07210000000000000000000000000000.drbin
+	-r /vendor/app/mcRegistry/050d0000000000000000000000000000.drbin \
+	-r /vendor/app/mcRegistry/07210000000000000000000000000000.drbin \
+	-r /apex/com.mediatek.oemcrypto/firmware/tee/40188311faf343488db888ad39496f9a.drbin
     user root
     group root
     seclabel u:r:recovery:s0
@@ -55,55 +56,4 @@ service mobicore /vendor/bin/mcDriverDaemon --P1 /mnt/vendor/persist/mcRegistry 
 # 06090000000000000000000000000000.drbin : drm keyinstall
 # 9073f03a9618383bb1856eb3f990babd.drbin : m4u
 # 6b3f5fa0f8cf55a7be2582587d62d63a.drbin : hdcp
-
-on init
-    #create mountpoint for /mnt/vendor/persist partition
-    mkdir /mnt/vendor/persist 0771 system system
-
-on post-fs
-    chown system system /mnt/vendor/persist
-    chmod 0771 /mnt/vendor/persist
-
-    # We restorecon /mnt/vendor/persist to set SEPolicy label.
-    restorecon /mnt/vendor/persist
-
-    # Create mcRegistry to store failure record
-    mkdir /mnt/vendor/persist/mcRegistry 0771 system system
-    mkdir /mnt/vendor/persist/mcRegistry/tee_logs 0771 system system
-    mkdir /mnt/vendor/persist/keybox 0771 system system
-    #USD: add [paytrigger] by tie.huang add 20280217 start
-    mkdir /mnt/vendor/persist/paytrigger 0777 system system
-    #USD: add [paytrigger] by tie.huang add 20280217 end
-
-    #USD:Create startPara for anti-crack by shishan.zheng 20250218 start
-    mkdir /mnt/vendor/persist/startPara
-    chown system system /mnt/vendor/persist/startPara
-    chmod 0777 /mnt/vendor/persist/startPara
-    restorecon /tranfs
-    mkdir /tranfs/startPara 0700 system system
-    chown system system /tranfs/startPara
-    chmod 0777 /tranfs/startPara
-    #USD:Create startPara for anti-crack by shishan.zheng 20250218 end
-
-on post-fs-data
-    # Create /data/vendor/key_provisioning dir and get proper encryption policy installed
-    # Key Installation
-    mkdir /data/vendor/key_provisioning 0771 system system
-
-# For META/FACTORY mode
-on property:ro.crypto.state=unsupported
-    write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry ++ (unencrypted)"
-    mkdir /data/vendor/mcRegistry 0775 system system
-    write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry -- (unencrypted)"
-
-# Normal mode, FBE
-on property:ro.crypto.type=file && property:ro.crypto.state=encrypted
-    write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry ++ (FBE encrypted)"
-    mkdir /data/vendor/mcRegistry 0775 system system
-    write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry -- (FBE encrypted)"
-
-# Normal mode, FDE
-on property:vold.decrypt=trigger_restart_framework
-    write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry ++ (FDE encrypted)"
-    mkdir /data/vendor/mcRegistry 0775 system system
-    write /proc/bootprof "MOBICORE: create /data/vendor/mcRegistry -- (FDE encrypted)"
+# 050d0000000000000000000000000000.drbin : drspi_fp
