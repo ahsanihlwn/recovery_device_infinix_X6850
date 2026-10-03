@@ -34,7 +34,7 @@ BOARD_KERNEL_SEPARATED_DTBO := true
 
 # Kernel
 TARGET_NO_KERNEL := true
-BOARD_RAMDISK_USE_GZIP := true
+include $(DEVICE_PATH)/common/mt6789-vendor16/BoardConfig.mk
 TARGET_PREBUILT_DTB := $(DEVICE_PATH)/prebuilt/dtb
 
 BOARD_BOOT_HEADER_VERSION := 4
@@ -48,10 +48,13 @@ BOARD_DTB_SIZE := 183850
 BOARD_DTB_OFFSET := 0x07c88000
 BOARD_VENDOR_BASE := 0x3fff8000
 
-BOARD_VENDOR_CMDLINE := bootopt=64S3,32N2,64N2
+BOARD_VENDOR_CMDLINE := bootopt=64S3,32N2,64N2 bootconfig
+BOARD_BOOTCONFIG += kernel.rcu_nocbs=all
+BOARD_BOOTCONFIG += kernel.rcutree.enable_rcu_lazy=1
+BOARD_BOOTCONFIG += kernel.rcupdate.rcu_cpu_stall_cputime=1
 
 BOARD_MKBOOTIMG_ARGS += --dtb $(TARGET_PREBUILT_DTB)
-BOARD_MKBOOTIMG_ARGS += --vendor_cmdline $(BOARD_VENDOR_CMDLINE)
+BOARD_MKBOOTIMG_ARGS += --vendor_cmdline "$(BOARD_VENDOR_CMDLINE)"
 BOARD_MKBOOTIMG_ARGS += --pagesize $(BOARD_PAGE_SIZE) --board ""
 BOARD_MKBOOTIMG_ARGS += --kernel_offset $(BOARD_KERNEL_OFFSET)
 BOARD_MKBOOTIMG_ARGS += --ramdisk_offset $(BOARD_RAMDISK_OFFSET)

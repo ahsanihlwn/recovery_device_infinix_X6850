@@ -4,6 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+DEVICE_PATH := device/infinix/X6850
+
 # Configure base.mk
 $(call inherit-product, $(SRC_TARGET_DIR)/product/base.mk)
 
@@ -123,3 +125,8 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES_DEBUG += \
     update_engine_client
+
+# Stock modules live only in PLATFORM; they are available in both boot modes.
+MTK_VENDOR16_RAMDISK_MODULES_DIR := $(DEVICE_PATH)/prebuilt/modules
+MTK_VENDOR16_RAMDISK_FSTABS := $(DEVICE_PATH)/recovery/root/first_stage_ramdisk/fstab.mt6789
+$(call inherit-product, $(DEVICE_PATH)/common/mt6789-vendor16/vendor_ramdisk.mk)
