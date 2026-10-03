@@ -15,3 +15,5 @@
 *.prop      text eol=lf
 
 recovery/root/vendor/firmware/Conf_MultipleTest.ini -text
+recovery/root/vendor/firmware/BT_FW.cfg -text
+recovery/root/vendor/firmware/WMT_SOC.cfg -text

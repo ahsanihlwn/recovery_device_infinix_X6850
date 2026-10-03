@@ -113,6 +113,7 @@ alias of:N*T*Cmediatek,mt6380-regulator mtk_pmic_wrap
 alias of:N*T*Cmediatek,mt6380-regulatorC* mtk_pmic_wrap
 alias of:N*T*Cmediatek,mt6397 mtk_pmic_wrap
 alias of:N*T*Cmediatek,mt6397C* mtk_pmic_wrap
+alias i2c:aw22xxx_led leds_aw22xxx
 alias i2c:wireless tc_mt5728
 alias of:N*T*Cmediatek,mt2712-i2c i2c_mt65xx
 alias of:N*T*Cmediatek,mt2712-i2cC* i2c_mt65xx
@@ -403,6 +404,8 @@ alias of:N*T*Cvtdr6126,fhdp,dsi,vdo,csot,panda,cl6 vtdr6126_fhdp_dsi_vdo_csot_pa
 alias of:N*T*Cvtdr6126,fhdp,dsi,vdo,csot,panda,cl6C* vtdr6126_fhdp_dsi_vdo_csot_panda_120hz_cl6
 alias of:N*T*Ctc,pd_adapter tc_pd_adapter
 alias of:N*T*Ctc,pd_adapterC* tc_pd_adapter
+alias of:N*T*Ctranssion,_water_detect tc_water_detect
+alias of:N*T*Ctranssion,_water_detectC* tc_water_detect
 alias of:N*T*Cvtdr6126a,fhdp,dsi,vdo,dsc,tm,tm,144hz,x6885 vtdr6126a_fhdp_dsi_vdo_dsc_tm_tm_144hz_x6885
 alias of:N*T*Cvtdr6126a,fhdp,dsi,vdo,dsc,tm,tm,144hz,x6885C* vtdr6126a_fhdp_dsi_vdo_dsc_tm_tm_144hz_x6885
 alias of:N*T*Cnt37706a,fhdp,dsi,vdo,dsc,boe,boe,144hz,x6886 nt37706a_fhdp_dsi_vdo_dsc_boe_boe_144hz_x6886
@@ -453,6 +456,8 @@ alias of:N*T*Cmediatek,mt6720-lbat-service pmic_lbat_service
 alias of:N*T*Cmediatek,mt6720-lbat-serviceC* pmic_lbat_service
 alias of:N*T*Crm69220,fhdp,dsi,vdo,dsc,csot,csot,120hz,x6853 rm69220_fhdp_dsi_vdo_dsc_csot_csot_120hz_x6853
 alias of:N*T*Crm69220,fhdp,dsi,vdo,dsc,csot,csot,120hz,x6853C* rm69220_fhdp_dsi_vdo_dsc_csot_csot_120hz_x6853
+alias of:N*T*Ctranssion,_adapter_control tc_adapter_control
+alias of:N*T*Ctranssion,_adapter_controlC* tc_adapter_control
 alias platform:mtk-spi spi_mt65xx
 alias of:N*T*Cmediatek,mt2701-spi spi_mt65xx
 alias of:N*T*Cmediatek,mt2701-spiC* spi_mt65xx
@@ -674,6 +679,8 @@ alias of:N*T*Cmediatek,common-emimpu emi_mpu
 alias of:N*T*Cmediatek,common-emimpuC* emi_mpu
 alias of:N*T*Carm,sec-rng sec_rng
 alias of:N*T*Carm,sec-rngC* sec_rng
+alias of:N*T*Ctran,led_core tran_led_core
+alias of:N*T*Ctran,led_coreC* tran_led_core
 alias of:N*T*Cnt37703a,fhdp,dsi,vdo,dsc,tm,chct,120hz,cm5 nt37703a_fhdp_dsi_vdo_dsc_tm_chct_120hz_cm5
 alias of:N*T*Cnt37703a,fhdp,dsi,vdo,dsc,tm,chct,120hz,cm5C* nt37703a_fhdp_dsi_vdo_dsc_tm_chct_120hz_cm5
 alias of:N*T*Ctc,temp_forecast tc_temp_forecast

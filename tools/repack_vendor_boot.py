@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build X6850 vendor_boot from stock platform data and a recovery overlay."""
+"""Build X6853 vendor_boot from stock platform data and a recovery overlay."""
 
 import argparse
 import ctypes
@@ -576,7 +576,7 @@ def main():
     try:
         run(args)
     except (RepackError, OSError, ValueError, struct.error, UnicodeError) as error:
-        parser.exit(1, f"[X6850] {error}\n")
+        parser.exit(1, f"[X6853] {error}\n")
 
 
 if __name__ == "__main__":

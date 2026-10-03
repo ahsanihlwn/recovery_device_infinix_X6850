@@ -181,6 +181,8 @@ tkv.ko
 tkv_recovery.ko
 sd_tray.ko
 mtk-kpd.ko
+tran-led-core.ko
+leds-aw22xxx.ko
 tran_key_bigdata.ko
 st21nfc.ko
 tc_common_class.ko
@@ -201,16 +203,17 @@ tc_ambient_temp_det.ko
 tc_pid_chg_algo.ko
 tc_temp_forecast.ko
 tc_chg_type_det.ko
-tran_wireless_manager.ko
-tc_mt5728.ko
-tran_wireless_ta.ko
 mt6358_battery.ko
 mtk_battery_manager.ko
 tc_gauge.ko
+tran_wireless_manager.ko
+tc_mt5728.ko
+tran_wireless_ta.ko
 tc_pmic.ko
 tc_misc_intf.ko
 tc_pd_adapter.ko
 tc_charger_framework.ko
+tc_adapter_control.ko
 tcpci_late_sync.ko
 tc_audio.ko
 tc_pe20_algo.ko
@@ -219,6 +222,7 @@ tc_pd_algo.ko
 tc_hvdcp20_algo.ko
 tc_pep50.ko
 tc_tfcp_ta.ko
+tc_water_detect.ko
 pca_tfcp_ta.ko
 tc_auto_test.ko
 rt_pd_manager.ko
