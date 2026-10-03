@@ -1,3 +1,5 @@
+# WORK IN PROGRESS!
+
 ## OrangeFox device tree for Infinix Note 40 Pro 4G (_X6850_)
 
 ## Device picture
@@ -32,12 +34,12 @@ Colors                  | Vintage Green, Titan Gold, Racing Edition
 - [X] ADB
 - [X] Decryption
 - [X] Display
-- [X] Fasbootd
-- [X] Flashing
-- [X] MTP
-- [X] Sideload
-- [X] USB OTG
-- [X] Vibrator
+- [] Fasbootd
+- [] Flashing
+- [] MTP
+- [] Sideload
+- [] USB OTG
+- [] Vibrator
 
 ## Building
 
