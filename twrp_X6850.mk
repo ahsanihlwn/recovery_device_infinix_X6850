@@ -20,7 +20,7 @@ $(call inherit-product, device/infinix/X6850/fox.mk)
 PRODUCT_NAME := twrp_X6850
 PRODUCT_DEVICE := X6850
 PRODUCT_BRAND := Infinix
-PRODUCT_MODEL := Infinix NOTE 40 Pro
+PRODUCT_MODEL := Infinix X6850
 PRODUCT_MANUFACTURER := INFINIX
 
 PRODUCT_GMS_CLIENTID_BASE := android-transsion
