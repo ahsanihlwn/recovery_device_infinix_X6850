@@ -167,9 +167,6 @@ alias of:N*T*Ctc,tfcp_taC* tc_tfcp_ta
 alias i2c:tfcp_ta tc_tfcp_ta
 alias of:N*T*Cti,syscon-reset reset_ti_syscon
 alias of:N*T*Cti,syscon-resetC* reset_ti_syscon
-alias of:N*T*Crichtek,hl7139a tc_hl7139a
-alias of:N*T*Crichtek,hl7139aC* tc_hl7139a
-alias i2c:hl7139a tc_hl7139a
 alias of:N*T*Cwireless_ta tran_wireless_ta
 alias of:N*T*Cwireless_taC* tran_wireless_ta
 alias of:N*T*Ctc_audio tc_audio

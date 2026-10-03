@@ -195,7 +195,7 @@ tc_sc8950.ko
 tc_tcpc.ko
 tran_usb_ctrl.ko
 tc_otg_ctrl.ko
-tc_hl7139a.ko
+tc_sc8548_charger.ko
 tc_lcd_notify.ko
 tc_ambient_temp_det.ko
 tc_pid_chg_algo.ko

@@ -25,8 +25,8 @@
 /lib/modules/tc_tfcp_ta.ko: /lib/modules/tc_ta_class.ko /lib/modules/tc_misc_intf.ko /lib/modules/tc_adapter_class.ko /lib/modules/tc_charger_class.ko /lib/modules/tc_algorithm_class.ko /lib/modules/tc_common_class.ko /lib/modules/bootprof.ko
 /lib/modules/mmqos-common.ko: /lib/modules/mtk-mm-monitor-controller.ko /lib/modules/mm-monitor-platform-mt6789.ko /lib/modules/mtk-mmdvfs.ko /lib/modules/mmprofile.ko /lib/modules/mtk-icc-core.ko /lib/modules/mtk_dramc.ko /lib/modules/mtk-mmdvfs-debug.ko /lib/modules/mtk-dvfsrc.ko /lib/modules/mtk-smi-dbg.ko /lib/modules/emi.ko /lib/modules/emi-mpu.ko /lib/modules/mtk-smi.ko /lib/modules/log_store.ko /lib/modules/mrdump.ko /lib/modules/clk-common.ko /lib/modules/aee_aed.ko
 /lib/modules/reset-ti-syscon.ko:
-/lib/modules/tc_hl7139a.ko: /lib/modules/tc_charger_class.ko
 /lib/modules/tc_adapter_class.ko:
+/lib/modules/tc_sc8548_charger.ko: /lib/modules/tc_charger_class.ko
 /lib/modules/mtk-pwm.ko:
 /lib/modules/tran_wireless_ta.ko: /lib/modules/tc_adapter_class.ko /lib/modules/tc_charger_class.ko
 /lib/modules/clk-mt6789.ko: /lib/modules/clk-common.ko /lib/modules/aee_aed.ko

@@ -28,7 +28,7 @@ patch_files=(
 )
 
 export ALLOW_MISSING_DEPENDENCIES=true
-export FOX_BUILD_DEVICE=X6850
+export FOX_BUILD_DEVICE=X6850B
 export FOX_VIRTUAL_AB_DEVICE=1
 export FOX_VENDOR_BOOT_RECOVERY=1
 export FOX_INSTALLER_VENDOR_BOOT_RAMDISK_INSTALL=0
@@ -45,7 +45,7 @@ unset legacy_patch
 patches_ok=true
 for patch_file in "${patch_files[@]}"; do
     if [[ ! -f "${patch_file}" ]] || ! command -v patch >/dev/null 2>&1; then
-        echo "[X6850] Missing patch or patch command: ${patch_file}"
+        echo "[X6850B] Missing patch or patch command: ${patch_file}"
         patches_ok=false
         break
     fi
@@ -54,11 +54,11 @@ for patch_file in "${patch_files[@]}"; do
             patches_ok=false
             break
         fi
-        echo "[X6850] Applied $(basename "${patch_file}")."
+        echo "[X6850B] Applied $(basename "${patch_file}")."
     elif (cd "${workspace_root}" && patch -p1 -R --dry-run --silent < "${patch_file}" >/dev/null 2>&1); then
-        echo "[X6850] Already applied $(basename "${patch_file}")."
+        echo "[X6850B] Already applied $(basename "${patch_file}")."
     else
-        echo "[X6850] Patch does not apply: ${patch_file}"
+        echo "[X6850B] Patch does not apply: ${patch_file}"
         patches_ok=false
         break
     fi
