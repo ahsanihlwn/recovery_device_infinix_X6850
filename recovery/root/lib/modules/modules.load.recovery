@@ -48,6 +48,9 @@ mtk-smi-dbg.ko
 mtk-uart-apdma.ko
 8250_mtk.ko
 i2c-mt65xx.ko
+adaptive-ts.ko
+focaltech_ft3683g.ko
+gt9916_common.ko
 rtc-mt6397.ko
 spi-mt65xx.ko
 mmprofile.ko
