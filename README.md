@@ -53,7 +53,7 @@ Clone the device tree:
 
 ```
 cd ~/fox_14.1
-git clone https://github.com/ardiandideyashidiq/recovery_device_infinix_X6850.git -b fox_14.1 ./device/infinix/X6850
+git clone https://github.com/ahsanihlwn/recovery_device_infinix_X6850.git -b fox_14.1_X6850 ./device/infinix/X6850
 ```
 
 The build produces PLATFORM and RECOVERY ramdisks natively. PLATFORM contains a source-built first-stage init, the device fstab, and kernel modules matching the Android 16 firmware. No stock vendor_boot image is needed during the build.
