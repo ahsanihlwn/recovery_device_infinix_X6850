@@ -24,8 +24,7 @@ The source pipeline builds a static first-stage init and creates separate ZSTD
 PLATFORM and RECOVERY fragments. The device's 233 stock modules and five
 metadata files are installed into PLATFORM. `common/mt6789-vendor16` and patch 04
 provide the native build rules. No stock image or post-build PLATFORM replacement
-is used. Legacy repack tools remain available for manual analysis and are not
-enabled by `vendorsetup.sh`.
+is used. Obsolete repacking tools have been removed from the device tree.
 
 Target firmware: Android 16, SDK 36, incremental `301450017`, security patch
 `2026-08-01`, kernel module ABI
@@ -51,6 +50,16 @@ on X6850B; shared inputs alone do not prove those runtime results.
 See [device adaptation notes](docs/native-vendor16.md) for the source changes,
 dump evidence and build checks.
 
+
+### Device utility
+
+`tools/patch_adaptive_ts.py` is a manual generator for the audited recovery touch
+module; see [its usage notes](tools/README.md). The native build consumes the
+prepared module and does not invoke this utility. Obsolete vendor_boot repacking
+scripts and the unused X6850 stock reference image have been removed.
+
+Patch 03 is retained only so `vendorsetup.sh` can reverse its old installer hook
+in a previously patched checkout. Native setup applies patches 04/05/06.
 
 ### Recovery SELinux
 

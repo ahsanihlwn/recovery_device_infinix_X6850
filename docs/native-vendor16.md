@@ -41,7 +41,7 @@ partisinya. RECOVERY menyimpan OrangeFox. Dua bagian ini dirakit oleh build.
 | vendorsetup.sh | FOX_BUILD_DEVICE dan label log menjadi X6850B; patch native dan installer full-image tetap aktif. |
 | prebuilt/modules | Semua modul dan lima metadata dicocokkan dengan PLATFORM asli device ini. Replaces tc_hl7139a.ko with tc_sc8548_charger.ko. |
 | prebuilt/source_vendor_boot.img | Referensi X6850 yang tidak dipakai build dihapus dari branch ini agar tidak disangka image stock X6850B. |
-| tools/postprocess_vendor_boot.sh, tools/repack_vendor_boot.py | Nama pesan/variabel legacy disesuaikan; kedua helper ini tetap tidak dipakai build native. |
+| tools/postprocess_vendor_boot.sh, tools/repack_vendor_boot.py | Dihapus setelah migrasi native; salinan hanya ada di arsip analisis lokal. |
 | recovery/root/vendor/firmware/focaltech_ts_fw.bin | Diganti dengan bytes asli ODM X6850B; hash diperiksa sebelum build. |
 | recovery/root/vendor/firmware/WMT_SOC.cfg | Diganti dengan bytes asli ODM X6850B; hash diperiksa sebelum build. |
 | recovery/root/vendor/firmware/BT_FW.cfg | Diganti dengan bytes asli ODM X6850B; hash diperiksa sebelum build. |
@@ -75,7 +75,7 @@ bukti boot fisik, dekripsi atau tap/swipe. Driver dan input yang sama menguatkan
 alasan memakai bootstrap yang sama, tetapi hasil runtime tetap harus diuji pada
 unit X6850B dengan firmware/kernel yang cocok. Jangan flash image ini ke X6850.
 
-## Hasil build 2026-10-04
+## Hasil build bootstrap awal 2026-10-04 (historis, sebelum Enforcing)
 
 - `lunch twrp_X6850B-ap2a-eng` dan `m -j16 adbd vendorbootimage` selesai, exit 0.
 - Image 67108864 byte, SHA256 `9b4b81500bc1803f4afb77fa746c940726fc40a901d06aeea5145864d045a76f`.
@@ -99,3 +99,10 @@ unit X6850B dengan firmware/kernel yang cocok. Jangan flash image ini ke X6850.
 Catatan density: prop.default hasil build tidak memuat ro.sf.lcd_density.
 Nilai TARGET_RECOVERY_DENSITY di BoardConfig mencatat nilai stock ODM dan
 bukan bukti nilai DPI runtime. Layout/touch UI masih perlu diperiksa fisik.
+
+
+## Utility touch pada tree native
+
+Lihat [tools/README.md](../tools/README.md) untuk generator manual adaptive-ts.
+Build memakai prebuilt touch yang telah diaudit; helper repack lama telah dihapus.
+Patch 03 hanya dipakai untuk reverse hook installer lama saat setup native.
