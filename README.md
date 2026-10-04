@@ -35,9 +35,3 @@ out/target/product/X6850/OrangeFox-*.zip
 
 `OUT_DIR` overrides the output prefix. The build produces native PLATFORM and
 RECOVERY ramdisks; no stock reference image or post-build repacking is required.
-
-## Contributors
-
-- [ahsanihlwn](https://github.com/ahsanihlwn)
-- [ardiandideyashidiq](https://github.com/ardiandideyashidiq)
-- [Andrikurn](https://github.com/Andrikurn)
