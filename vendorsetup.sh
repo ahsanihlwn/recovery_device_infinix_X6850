@@ -25,6 +25,8 @@ patch_files=(
     "${device_dir}/patches/01-patch-vibration.patch"
     "${device_dir}/patches/02-patch-health-hal.patch"
     "${device_dir}/patches/04-patch-native-vendor-ramdisk.patch"
+    "${device_dir}/patches/05-patch-enforcing-recovery.patch"
+    "${device_dir}/patches/06-patch-fbe-auth-token.patch"
 )
 
 export ALLOW_MISSING_DEPENDENCIES=true
