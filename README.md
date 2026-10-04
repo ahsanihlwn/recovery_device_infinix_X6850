@@ -87,6 +87,16 @@ lunch twrp_X6850-ap2a-eng && mka adbd vendorbootimage
 ```
 
 
+### Device utility
+
+`tools/patch_adaptive_ts.py` is a manual generator for the audited recovery touch
+module; see [its usage notes](tools/README.md). The native build consumes the
+prepared module and does not invoke this utility. Obsolete vendor_boot repacking
+scripts and the unused X6850 stock reference image have been removed.
+
+Patch 03 is retained only so `vendorsetup.sh` can reverse its old installer hook
+in a previously patched checkout. Native setup applies patches 04/05/06.
+
 ### Recovery SELinux
 
 The recovery policy is built with no permissive domains. Patch 05 supplies the

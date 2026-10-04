@@ -1,1 +1,3 @@
-/prebuilt/source_vendor_boot.img
+/docs_impl.md
+/.local-debug/
+/tools/__pycache__/
