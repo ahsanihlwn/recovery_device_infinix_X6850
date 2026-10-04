@@ -102,6 +102,7 @@ recovery_only(`
   allow recovery rootfs:lnk_file create_file_perms;
   allow recovery rootfs:fifo_file create_file_perms;
   allow recovery tmpfs:fifo_file create_file_perms;
+  allow recovery tmpfs:lnk_file create_file_perms;
   allow recovery block_device:dir rw_dir_perms;
   allow recovery block_device:lnk_file create_file_perms;
   allow recovery fscklogs:dir create_dir_perms;
@@ -127,6 +128,7 @@ recovery_only(`
   set_prop(recovery, vold_status_prop)
   set_prop(recovery, restorecon_prop)
   set_prop(recovery, timezone_prop)
+  set_prop(recovery, ctl_adbd_prop)
   # OrangeFox uses stock build/fingerprint values while initializing FBE.
   # resetprop updates only these ramdisk property areas, not Android disk files.
   allow recovery { build_prop build_vendor_prop build_odm_prop build_bootimage_prop
