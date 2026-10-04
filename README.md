@@ -14,19 +14,6 @@ Unofficial device tree for Android 16. Branch: `fox_14.1_X6850B`.
 | Kernel module ABI | `6.12.38-android16-5-gcc51d883045d-4k` |
 | PLATFORM modules | 233 modules + 5 stock metadata files |
 
-## Status
-
-| Feature | Status |
-| --- | --- |
-| Build and image/ZIP validation | Passed |
-| Recovery / ADB | Not tested on hardware |
-| Credential CE decryption | Not tested on hardware |
-| Android boot to `system_server` | Not tested on hardware |
-| SELinux | Enforcing policy built; zero permissive domains |
-| Fastbootd | Not tested on hardware |
-
-Other recovery features require testing on X6850B.
-
 ## Build
 
 Use an OrangeFox 14.1 checkout with this branch at `device/infinix/X6850B`.
