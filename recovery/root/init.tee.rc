@@ -30,8 +30,8 @@ service mobicore /vendor/bin/mcDriverDaemon --P1 /mnt/vendor/persist/mcRegistry 
 	-r /vendor/app/mcRegistry/5020170115e016302017012521300000.drbin \
 	-r /vendor/app/mcRegistry/07210000000000000000000000000000.drbin
     user root
-    group root
-    seclabel u:r:recovery:s0
+    group root system
+    seclabel u:r:mtk_recovery_tee:s0
 
 # t-Drv naming
 # 020f0000000000000000000000000000.drbin : utils
@@ -65,7 +65,6 @@ on post-fs
     chmod 0771 /mnt/vendor/persist
 
     # We restorecon /mnt/vendor/persist to set SEPolicy label.
-    restorecon /mnt/vendor/persist
 
     # Create mcRegistry to store failure record
     mkdir /mnt/vendor/persist/mcRegistry 0771 system system
@@ -79,7 +78,6 @@ on post-fs
     mkdir /mnt/vendor/persist/startPara
     chown system system /mnt/vendor/persist/startPara
     chmod 0777 /mnt/vendor/persist/startPara
-    restorecon /tranfs
     mkdir /tranfs/startPara 0700 system system
     chown system system /tranfs/startPara
     chmod 0777 /tranfs/startPara

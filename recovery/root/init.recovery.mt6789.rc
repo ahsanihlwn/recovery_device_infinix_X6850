@@ -1,6 +1,8 @@
 import /init.tee.rc
 
 on init
+    # Generated mount fstab lives on writable recovery tmpfs.
+    symlink /tmp/fstab /etc/fstab
     insmod /lib/modules/touch/adaptive-ts.ko
     insmod /lib/modules/touch/gt9916_common.ko
     insmod /lib/modules/touch/focaltech_ft3683g.ko
@@ -58,18 +60,18 @@ on property:servicemanager.ready=true
 service vendor.gatekeeper-default /vendor/bin/hw/android.hardware.gatekeeper-service.trustonic
 	class early_hal
     interface android.hardware.gatekeeper@1.0::IGatekeeper default
-    user root
-    group root
-    seclabel u:r:recovery:s0
+    user system
+    group system
+    seclabel u:r:hal_gatekeeper_default:s0
 
 # Keymint
-service vendor.keymint-trustonic /vendor/bin/hw/android.hardware.security.keymint@3.0-service.trustonic
+service vendor.keymint-trustonic /vendor/bin/hw/android.hardware.security.keymint@3.0-service.trustonic --rkp_version=v1
     class early_hal
 	interface android.hardware.keymaster@4.0::IKeymasterDevice default
     interface android.hardware.keymaster@4.1::IKeymasterDevice default
-    user root
-	group root
-    seclabel u:r:recovery:s0
+    user system
+	group system
+    seclabel u:r:hal_keymint_default:s0
 
 # MTK AIDL Boot HAL
 service vendor.boot-default /system/bin/hw/android.hardware.boot-service.mtk
@@ -77,7 +79,7 @@ service vendor.boot-default /system/bin/hw/android.hardware.boot-service.mtk
     user root
     group root
     interface aidl android.hardware.boot.IBootControl/default
-    seclabel u:r:recovery:s0
+    seclabel u:r:hal_bootctl_default:s0
 
 # Override Health HAL service definition.
 service vendor.health-default /system/bin/hw/android.hardware.health-service.example_recovery
@@ -86,7 +88,7 @@ service vendor.health-default /system/bin/hw/android.hardware.health-service.exa
     group root
     capabilities WAKE_ALARM BLOCK_SUSPEND
     file /dev/kmsg w
-    seclabel u:r:recovery:s0
+    seclabel u:r:hal_health_default:s0
     override
 
 # Override keystore2 service definition.	
@@ -96,5 +98,5 @@ service keystore2 /system/bin/keystore2 /tmp/misc/keystore
     user root
     group root keystore readproc log
     writepid /dev/cpuset/foreground/tasks
-    seclabel u:r:recovery:s0
+    seclabel u:r:keystore:s0
 	override
