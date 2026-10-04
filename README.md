@@ -50,3 +50,28 @@ on X6853; shared inputs alone do not prove those runtime results.
 
 See [device adaptation notes](docs/native-vendor16.md) for the source changes,
 dump evidence and build checks.
+
+
+### Recovery SELinux
+
+The recovery policy is built with no permissive domains. Patch 05 supplies the
+enforcing init/service setup and the native file-contexts build dependency fix.
+Patch 06 checks the native Gatekeeper-to-keystore auth-token handoff. Metadata,
+DE and credential-protected CE decryption must be validated separately.
+See [the shared policy notes](common/mt6789-vendor16/sepolicy/README.md) for the
+userdata/FBE rules, build checks and physical-device validation requirements.
+Feature support must be verified again on the enforcing build for each model.
+
+
+### Enforcing validation on 2026-10-04
+
+The common native init, enforcing policy and credential-token fixes are identical
+across X6850, X6853 and X6850B. All three target images were rebuilt and validated
+with zero permissive domains and compiler neverallow checks enabled. Target
+modules, firmware, product identity and density remain model specific.
+
+X6850 was physically tested with the updated build: recovery/ADB works,
+credential-protected user-0 CE decryption succeeds, and normal Android reaches
+`sys.boot_completed=1` with a stable `system_server`. Fastbootd mode entry works;
+full partition-operation support has not been certified. X6853 and X6850B still
+require physical testing on their corresponding models.
