@@ -88,6 +88,7 @@ recovery_only(`
   allow recovery self:global_capability_class_set { fsetid sys_rawio };
   allow recovery self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
   allow recovery proc_filesystems:file r_file_perms;
+  allow recovery proc_version:file r_file_perms;
   # Process/service inspection and boot evidence from actual denied reads.
   r_dir_file(recovery, domain)
   allow recovery domain:process getattr;
@@ -105,7 +106,7 @@ recovery_only(`
   allow recovery self:dir write;
   # The /etc tmpfs copy is relabeled before logd and the boot HAL start.
   allow init tmpfs:file relabelfrom;
-  allow init rootfs:chr_file relabelfrom;
+  allow init rootfs:chr_file { getattr relabelfrom };
   # Match AOSP task-profile read access, using a label for the RAM copy.
   allow domain mtk_recovery_task_profiles_file:file r_file_perms;
   allow init mtk_recovery_cgroup_desc_file:file r_file_perms;
