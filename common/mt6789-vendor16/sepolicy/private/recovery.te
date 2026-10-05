@@ -105,6 +105,7 @@ recovery_only(`
   allow recovery self:dir write;
   # The /etc tmpfs copy is relabeled before logd and the boot HAL start.
   allow init tmpfs:file relabelfrom;
+  allow init rootfs:chr_file relabelfrom;
   # Match AOSP task-profile read access, using a label for the RAM copy.
   allow domain mtk_recovery_task_profiles_file:file r_file_perms;
   allow init mtk_recovery_cgroup_desc_file:file r_file_perms;
@@ -141,6 +142,9 @@ recovery_only(`
   allow recovery data_file_type:file { create_file_perms relabelfrom relabelto };
   allow recovery data_file_type:lnk_file create_file_perms;
   allow recovery data_file_type:sock_file getattr;
+  allow recovery app_data_file:fifo_file getattr;
+  allow recovery system_file:sock_file getattr;
+  allow recovery dex2oat_exec:file getattr;
   allow recovery unlabeled:{ fifo_file sock_file } getattr;
   allow recovery mnt_vendor_file:dir create_dir_perms;
   allow recovery mnt_vendor_file:file create_file_perms;
