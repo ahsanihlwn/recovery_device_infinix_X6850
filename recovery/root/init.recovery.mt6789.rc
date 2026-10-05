@@ -1,6 +1,9 @@
 import /init.tee.rc
 
 on init
+    restorecon_recursive /sys/devices/platform/soc/soc:mtk-leds
+    restorecon_recursive /sys/devices/platform/soc/soc:regulator-vibrator/leds/vibrator
+    restorecon /sys/devices/platform/soc/mt_usb/saving
     # Generated mount fstab lives on writable recovery tmpfs.
     symlink /tmp/fstab /etc/fstab
     insmod /lib/modules/touch/adaptive-ts.ko

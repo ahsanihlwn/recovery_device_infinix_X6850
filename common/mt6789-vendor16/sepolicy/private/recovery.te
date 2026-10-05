@@ -1,5 +1,10 @@
 type mtk_recovery_tee, domain;
 type mtk_recovery_proc_bootprof, fs_type, proc_type;
+type mtk_recovery_proc_partitions, fs_type, proc_type;
+type mtk_recovery_fstab_file, file_type;
+type mtk_recovery_task_profiles_file, file_type;
+type mtk_recovery_cgroup_desc_file, file_type;
+type mtk_recovery_apex_dir, file_type;
 type mtk_recovery_bootstrap, file_type;
 type mtk_recovery_tranlog_device, dev_type;
 type mtk_recovery_sysfs_control, fs_type, sysfs_type;
@@ -86,7 +91,29 @@ recovery_only(`
   # Process/service inspection and boot evidence from actual denied reads.
   r_dir_file(recovery, domain)
   allow recovery domain:process getattr;
-  allow recovery { proc_modules proc_pid_max proc_uptime }:file r_file_perms;
+  allow recovery { proc_modules proc_pid_max proc_uptime proc_stat mtk_recovery_proc_partitions }:file r_file_perms;
+  allow recovery init_exec:file getattr;
+  allow recovery properties_device:dir r_dir_perms;
+  allow recovery apex_mnt_dir:dir r_dir_perms;
+  # Recovery installer scratch mountpoint; no apexd is started here.
+  allow recovery mtk_recovery_apex_dir:dir { create_dir_perms mounton };
+  allow init mtk_recovery_apex_dir:dir mounton;
+  allow domain mtk_recovery_apex_dir:dir { getattr search };
+  allow recovery loop_control_device:chr_file rw_file_perms;
+  allowxperm recovery loop_control_device:chr_file ioctl LOOP_CTL_GET_FREE;
+  allow recovery random_device:chr_file mounton;
+  allow recovery self:dir write;
+  # The /etc tmpfs copy is relabeled before logd and the boot HAL start.
+  allow init tmpfs:file relabelfrom;
+  # Match AOSP task-profile read access, using a label for the RAM copy.
+  allow domain mtk_recovery_task_profiles_file:file r_file_perms;
+  allow init mtk_recovery_cgroup_desc_file:file r_file_perms;
+  # Writable /etc fstab has its own label; boot HAL does not read arbitrary tmpfs.
+  allow hal_bootctl_default mtk_recovery_fstab_file:file r_file_perms;
+  allow recovery mtk_recovery_fstab_file:file create_file_perms;
+  allow recovery mtk_recovery_fstab_file:lnk_file r_file_perms;
+  allow init mtk_recovery_fstab_file:lnk_file create_file_perms;
+  allowxperm recovery functionfs:file ioctl { 0x6781 };
   r_dir_file(recovery, pstorefs)
   allow recovery linkerconfig_file:dir r_dir_perms;
   get_prop(recovery, device_logging_prop)
@@ -120,6 +147,11 @@ recovery_only(`
   allowxperm recovery { system_data_file system_data_root_file media_rw_data_file vendor_data_file }:dir ioctl { 0x6613 0x6615 0x6617 };
   allowxperm recovery { system_data_file tmpfs }:file ioctl { 0xf50c };
   allowxperm recovery { block_device dm_device }:blk_file ioctl { 0x1260 0x4c01 0x5331 };
+  allowxperm recovery misc_block_device:blk_file ioctl { 0x1260 };
+  # Attach/read/detach read-only APEX payload files with loop devices.
+  allowxperm recovery loop_device:blk_file ioctl {
+    LOOP_SET_FD LOOP_CLR_FD LOOP_SET_STATUS64 LOOP_GET_STATUS64
+  };
   allow recovery gpu_device:chr_file rw_file_perms;
   allowxperm recovery { gpu_device graphics_device }:chr_file ioctl { 0x6400-0x64ff };
   allow recovery ashmem_libcutils_device:chr_file execute;
