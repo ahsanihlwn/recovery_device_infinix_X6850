@@ -1,6 +1,7 @@
 import /init.tee.rc
 
 on init
+    restorecon /kmsg
     restorecon_recursive /sys/devices/platform/soc/soc:mtk-leds
     restorecon_recursive /sys/devices/platform/soc/soc:regulator-vibrator/leds/vibrator
     restorecon /sys/devices/platform/soc/mt_usb/saving
