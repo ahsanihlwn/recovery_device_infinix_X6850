@@ -1,0 +1,25 @@
+--- a/system/sepolicy/public/domain.te
++++ b/system/sepolicy/public/domain.te
+@@ -494,11 +494,22 @@
+     with_asan(`-asan_extract')
+     recovery_only(`userdebug_or_eng(`-fastbootd')')
+     recovery_only(`-init')
++    recovery_only(`-recovery')
+ } {
+     system_file_type
+     vendor_file_type
+     exec_type
+ }:dir_file_class_set { create write setattr relabelfrom append unlink link rename };
++
++# Root module installers also use system/vendor labels under /data/adb.
++# Recovery may delete those objects, but may not create/relabel them or
++# write their file contents. Normal Android boot keeps the rule above unchanged.
++recovery_only(`
++  neverallow recovery { system_file_type vendor_file_type exec_type }:dir
++      { create setattr relabelfrom append link rename };
++  neverallow recovery { system_file_type vendor_file_type exec_type }:{ file lnk_file chr_file blk_file sock_file fifo_file }
++      { create write setattr relabelfrom append link rename };
++')
+ 
+ neverallow { domain -kernel with_asan(`-asan_extract') } { system_file_type vendor_file_type exec_type }:dir_file_class_set relabelto;
+ 
