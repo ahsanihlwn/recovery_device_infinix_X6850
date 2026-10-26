@@ -1,0 +1,140 @@
+--- a/bootable/recovery/partition.cpp
++++ b/bootable/recovery/partition.cpp
+@@ -38,6 +38,7 @@
+ #include <sstream>
+ #include <android-base/properties.h>
+ #include <libsnapshot/snapshot.h>
++#include <libdm/dm.h>
+ 
+ #include "cutils/properties.h"
+ #include "libblkid/include/blkid.h"
+@@ -2234,8 +2235,30 @@
+ 	return 1;
+ }
+ 
++// Only confirmed Format Data may remove the metadata-encryption mapping.
++// A normal (non-forced, non-deferred) remove fails while any mount or fd uses it.
++static bool Remove_Metadata_Encryption_Mapping() {
++	auto& dm = android::dm::DeviceMapper::Instance();
++	std::vector<android::dm::DeviceMapper::DmBlockDevice> devices;
++	if (!dm.GetAvailableDevices(&devices)) {
++		LOGERR("Cannot inspect device-mapper state before Format Data.\n");
++		return false;
++	}
++	for (const auto& device : devices) {
++		if (device.name() != "userdata")
++			continue;
++		if (!dm.DeleteDevice("userdata")) {
++			LOGERR("Cannot remove userdata mapping; Format Data stopped before mkfs.\n");
++			return false;
++		}
++		LOGINFO("Removed userdata metadata-encryption mapping before Format Data.\n");
++	}
++	return true;
++}
++
+ bool TWPartition::Wipe_Encryption() {
+ 	bool Save_Data_Media = Has_Data_Media;
++	bool Save_Is_Encrypted = Is_Encrypted;
+ 	bool ret = false;
+ 	std::string the_wipe_fs;
+ 
+@@ -2258,17 +2281,17 @@
+ 	if (!Is_Present) {
+ 		LOGINFO("Block device not present, cannot format %s.\n", Display_Name.c_str());
+ 		gui_msg(Msg(msg::kError, "unable_to_wipe=Unable to wipe {1}.")(Display_Name));
+-		return false;
++		goto exit;
+ 	}
+ 
+ #ifdef TW_INCLUDE_CRYPTO
+ 	if (!UnMount(true))
+-		return false;
+-	if (Is_Decrypted && !Decrypted_Block_Device.empty()) {
+-//		if (delete_crypto_blk_dev((char*)("userdata")) != 0) {
+-//			LOGERR("Error deleting crypto block device, continuing anyway.\n");
+-//		}
+-	}
++		goto exit;
++	// The mapping can remain active even when CE preparation/decryption failed.
++	// Tear it down before choosing ext4/f2fs and before forgetting its state.
++	if (Mount_Point == "/data" && !Key_Directory.empty() &&
++			!Remove_Metadata_Encryption_Mapping())
++		goto exit;
+ #endif
+ 	Has_Data_Media = false;
+ 	Decrypted_Block_Device = "";
+@@ -2284,6 +2307,7 @@
+ 	if (Wipe(the_wipe_fs)) {
+ 		Has_Data_Media = Save_Data_Media;
+ 		DataManager::SetValue(TW_IS_ENCRYPTED, 0);
++		DataManager::SetValue(TW_IS_DECRYPTED, 0);
+ #ifndef TW_OEM_BUILD
+ 		gui_msg("format_data_msg=You may need to reboot recovery to be able to use /data again.");
+ #endif
+@@ -2308,7 +2332,8 @@
+ 	} else {
+ 		Has_Data_Media = Save_Data_Media;
+ 		gui_err("format_data_err=Unable to format to remove encryption.");
+-		if (Has_Data_Media && Mount(false))
++		// Do not remount raw ciphertext after a failed encryption-removal format.
++		if (!Save_Is_Encrypted && Has_Data_Media && Mount(false))
+ 			PartitionManager.Add_MTP_Storage(MTP_Storage_ID);
+ 		goto exit;
+ 	}
+@@ -2704,19 +2729,7 @@
+ 		}
+ 	#endif
+ 
+-	#ifdef OF_USE_DMCTL
+-	if (TWFunc::Path_Exists("/dev/block/mapper/userdata")) {
+-		LOGINFO("OrangeFox: running dmctl before formatting...\n");
+-		TWFunc::Exec_Cmd("dmctl delete userdata", false);
+-		usleep(32768);
+-	}
+-	#elif defined(FOX_USE_DMSETUP)
+-	if (TWFunc::Path_Exists("/dev/block/mapper/userdata")) {
+-		LOGINFO("OrangeFox: running dmsetup before formatting...\n");
+-		TWFunc::Exec_Cmd("dmsetup remove -f userdata", false);
+-		usleep(32768);
+-	}
+-	#endif
++	// Encryption-mapper teardown belongs to Wipe_Encryption(), for every filesystem.
+ 
+ 	if (TWFunc::Exec_Cmd(f2fs_command) == 0) {
+ 		if (NeedPreserveFooter)
+--- a/system/vold/FsCrypt.cpp
++++ b/system/vold/FsCrypt.cpp
+@@ -37,6 +37,7 @@
+ #include <sys/mount.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
++#include <selinux/selinux.h>
+ #include <unistd.h>
+ 
+ #include <private/android_filesystem_config.h>
+@@ -895,9 +896,23 @@
+ 
+ static bool prepare_subdirs(const std::string& action, const std::string& volume_uuid,
+                             userid_t user_id, int flags) {
++    // Recovery embeds libvold and its ramdisk binaries keep the rootfs label.
++    // Select the existing helper domain explicitly; normal vold keeps its auto-transition.
++    char helper_context[] = "u:r:vold_prepare_subdirs:s0";
++    char* exec_context = nullptr;
++    if (is_selinux_enabled() > 0) {
++        char* caller_context = nullptr;
++        if (getcon(&caller_context) < 0) {
++            PLOG(ERROR) << "Cannot determine context for vold_prepare_subdirs";
++            return false;
++        }
++        if (std::string(caller_context) == "u:r:recovery:s0") exec_context = helper_context;
++        freecon(caller_context);
++    }
+     if (0 != android::vold::ForkExecvp(
+                  std::vector<std::string>{prepare_subdirs_path, action, volume_uuid,
+-                                          std::to_string(user_id), std::to_string(flags)})) {
++                                          std::to_string(user_id), std::to_string(flags)},
++                 nullptr, exec_context)) {
+         LOG(ERROR) << "vold_prepare_subdirs failed";
+         return false;
+     }

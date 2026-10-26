@@ -29,6 +29,9 @@ patch_files=(
     "${device_dir}/patches/06-patch-fbe-auth-token.patch"
     "${device_dir}/patches/07-patch-sideload-install-once.patch"
     "${device_dir}/patches/08-patch-enforcing-runtime.patch"
+    "${device_dir}/patches/09-patch-fastboot-ready.patch"
+    "${device_dir}/patches/10-patch-fbe-prepare-format.patch"
+    "${device_dir}/patches/11-patch-recovery-module-delete-policy.patch"
 )
 
 export ALLOW_MISSING_DEPENDENCIES=true
@@ -45,6 +48,14 @@ if (cd "${workspace_root}" && patch -p1 -R --dry-run --silent < "${legacy_patch}
     (cd "${workspace_root}" && patch -p1 -R --silent < "${legacy_patch}") || return 1
 fi
 unset legacy_patch
+
+# The terminal policy patch extends a hunk from patch05. Unwind only that
+# terminal patch before checking the earlier stack, then apply it again in order.
+terminal_policy_patch="${device_dir}/patches/11-patch-recovery-module-delete-policy.patch"
+if (cd "${workspace_root}" && patch -p1 -R --dry-run --silent < "${terminal_policy_patch}" >/dev/null 2>&1); then
+    (cd "${workspace_root}" && patch -p1 -R --silent < "${terminal_policy_patch}") || return 1
+fi
+unset terminal_policy_patch
 
 patches_ok=true
 for patch_file in "${patch_files[@]}"; do

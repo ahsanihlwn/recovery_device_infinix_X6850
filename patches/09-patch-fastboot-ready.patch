@@ -1,0 +1,89 @@
+--- a/bootable/recovery/startupArgs.cpp
++++ b/bootable/recovery/startupArgs.cpp
+@@ -51,9 +51,7 @@
+ 			android::base::SetProperty("sys.usb.configfs", "0");
+ 			sleep(1);
+ 			android::base::SetProperty("sys.usb.configfs", "1");
+-			android::base::SetProperty("sys.usb.config", "fastboot");
+-			DataManager::SetValue("tw_enable_adb", 0);
+-			DataManager::SetValue("tw_enable_fastboot", 1);
++			// process_fastbootd_mode starts USB only after logical devices are unmapped.
+ 		} else if (args[index].find(UPDATE_PACKAGE) != std::string::npos || args[index].find(SPECIAL_UPDATE_PACKAGE) != std::string::npos) {
+ 			std::string::size_type eq_pos = args[index].find("=");
+ 			std::string arg = args[index].substr(eq_pos + 1, args[index].size());
+--- a/bootable/recovery/twrp.cpp
++++ b/bootable/recovery/twrp.cpp
+@@ -115,15 +115,23 @@
+ static void process_fastbootd_mode() {
+ 		LOGINFO("starting fastboot\n");
+ 
+-		if (android::base::GetBoolProperty("ro.boot.dynamic_partitions", false)) {
++		const bool fastboot_ready =
++			!android::base::GetBoolProperty("ro.boot.dynamic_partitions", false) ||
+ 			PartitionManager.Unmap_Super_Devices();
++		if (!fastboot_ready) {
++			LOGERR("Unable to unmap dynamic partitions; keeping ADB active.\n");
+ 		}
+ 
+ #ifdef AB_OTA_UPDATER
+ 		DataManager::SetValue("tw_active_slot", PartitionManager.Get_Active_Slot_Display());
+ #endif
+ 
+-		gui_msg(Msg("fastboot_console_msg=Entered Fastboot mode..."));
++		// Do not expose fastboot while recovery still owns logical mappings.
++		DataManager::SetValue("tw_enable_fastboot", fastboot_ready ? 1 : 0);
++		DataManager::SetValue("tw_enable_adb", fastboot_ready ? 0 : 1);
++		android::base::SetProperty("sys.usb.config", fastboot_ready ? "fastboot" : "adb");
++		if (fastboot_ready)
++			gui_msg(Msg("fastboot_console_msg=Entered Fastboot mode..."));
+ 		property_set("ro.orangefox.fastbootd", "1");
+ 		property_set("ro.boot.verifiedbootstate", "orange");
+ 		TWFunc::RunFoxScript("/system/bin/runatboot.sh", "");
+--- a/bootable/recovery/gui/action.cpp
++++ b/bootable/recovery/gui/action.cpp
+@@ -2966,13 +2966,23 @@
+ int GUIAction::enableadb(std::string arg __unused) {
+ 	android::base::SetProperty("sys.usb.config", "none");
+ 	android::base::SetProperty("sys.usb.config", "adb");
++	DataManager::SetValue("tw_enable_adb", 1);
++	DataManager::SetValue("tw_enable_fastboot", 0);
+ 	return 0;
+ }
+ 
+ int GUIAction::enablefastboot(std::string arg __unused) {
+ 	android::base::SetProperty("sys.usb.config", "none");
+-	android::base::SetProperty("sys.usb.config", "fastboot");
+-	return 0;
++	const bool fastboot_ready =
++		!android::base::GetBoolProperty("ro.boot.dynamic_partitions", false) ||
++		PartitionManager.Unmap_Super_Devices();
++	if (!fastboot_ready) {
++		LOGERR("Unable to unmap dynamic partitions; keeping ADB active.\n");
++	}
++	android::base::SetProperty("sys.usb.config", fastboot_ready ? "fastboot" : "adb");
++	DataManager::SetValue("tw_enable_fastboot", fastboot_ready ? 1 : 0);
++	DataManager::SetValue("tw_enable_adb", fastboot_ready ? 0 : 1);
++	return fastboot_ready ? 0 : 1;
+ }
+ 
+ 
+--- a/bootable/recovery/gui/theme/portrait_hdpi/pages/main.xml
++++ b/bootable/recovery/gui/theme/portrait_hdpi/pages/main.xml
+@@ -226,8 +226,6 @@
+ 				<placement x="%btn_raised_right_x%" y="%row_btn1_y%" placement="1"/>
+ 				<text>{@enable_fastboot}</text>
+ 				<action function="enablefastboot"/>
+-				<action function="set">tw_enable_fastboot=1</action>
+-				<action function="set">tw_enable_adb=0</action>
+ 			</button>
+ 
+ 			<button style="btn_raised_hl">
+@@ -235,8 +233,6 @@
+ 				<placement x="%btn_raised_right_x%" y="%row_btn1_y%" placement="1"/>
+ 				<text>{@enable_adb}</text>
+ 				<action function="enableadb"/>
+-				<action function="set">tw_enable_adb=1</action>
+-				<action function="set">tw_enable_fastboot=0</action>
+ 			</button>
+ 		</page>
+ 	</pages>
