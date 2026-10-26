@@ -67,6 +67,17 @@ recovery_only(`
                    keystore_compat_hal_service }:service_manager find;
   allow recovery keystore:keystore2 add_auth;
   allow recovery vold_key:keystore2_key { use manage_blob };
+  # Embedded libvold launches only its directory-preparation helper in this
+  # existing AOSP domain. SDK-sandbox relabel permissions stay out of recovery.
+  domain_trans(recovery, rootfs, vold_prepare_subdirs)
+  allow vold_prepare_subdirs rootfs:file r_file_perms;
+  allow vold_prepare_subdirs rootfs:dir r_dir_perms;
+  allow vold_prepare_subdirs tmpfs:dir search;
+  allow vold_prepare_subdirs recovery:fd use;
+  allow vold_prepare_subdirs recovery:fifo_file { read write getattr };
+
+  # Embedded fscrypt/vold code searches keyrings owned by the recovery domain.
+  allow recovery self:key search;
   allow recovery locksettings_key:keystore2_key { use get_info req_forced_op };
   allow keystore recovery:binder transfer;
   allow keystore recovery:fd use;
@@ -110,8 +121,8 @@ recovery_only(`
   # Match AOSP task-profile read access, using a label for the RAM copy.
   allow domain mtk_recovery_task_profiles_file:file r_file_perms;
   allow init mtk_recovery_cgroup_desc_file:file r_file_perms;
-  # Writable /etc fstab has its own label; boot HAL does not read arbitrary tmpfs.
-  allow hal_bootctl_default mtk_recovery_fstab_file:file r_file_perms;
+  # The boot HAL and fastbootd read the recovery fstab without arbitrary tmpfs access.
+  allow { hal_bootctl_default fastbootd } mtk_recovery_fstab_file:file r_file_perms;
   allow recovery mtk_recovery_fstab_file:file create_file_perms;
   allow recovery mtk_recovery_fstab_file:lnk_file r_file_perms;
   allow init mtk_recovery_fstab_file:lnk_file create_file_perms;
@@ -136,10 +147,26 @@ recovery_only(`
   allow recovery block_device:lnk_file create_file_perms;
   allow recovery fscklogs:dir create_dir_perms;
   allow recovery fscklogs:file create_file_perms;
+  # Module installers can label payloads system_file/vendor_file even under
+  # /data/adb. Permit deletion, without adding file-content writes or creation.
+  allow recovery { system_file vendor_file }:dir { write remove_name rmdir };
+  allow recovery { system_file vendor_file }:{ file lnk_file } unlink;
+  # Magisk REMOVE entries are character-device whiteouts (0:0), not drivers.
+  # Unknown root-framework labels resolve to unlabeled in the recovery policy.
+  allow recovery { system_file vendor_file adb_data_file unlabeled }:chr_file { getattr unlink };
+
+  # An empty, freshly formatted metadata filesystem still needs /metadata/vold.
+  # Only that named child gets the standard vold metadata label at creation.
+  allow recovery metadata_file:dir { r_dir_perms write add_name };
+  type_transition recovery metadata_file:dir vold_metadata_file "vold";
+
   # Recovery embeds vold metadata-key handling, not the Android vold daemon.
   allow recovery vold_metadata_file:dir create_dir_perms;
   allow recovery vold_metadata_file:file create_file_perms;
   allow recovery data_file_type:dir { create_dir_perms mounton watch };
+  # Restore log/media directory labels without access to protected SDK-sandbox labels.
+  allow recovery { system_data_root_file system_data_file media_rw_data_file
+                   media_userdir_file recovery_data_file cache_file cache_recovery_file }:dir { relabelfrom relabelto };
   allow recovery data_file_type:file { create_file_perms relabelfrom relabelto };
   allow recovery data_file_type:lnk_file create_file_perms;
   allow recovery data_file_type:sock_file getattr;
@@ -153,6 +180,9 @@ recovery_only(`
   allowxperm recovery { system_data_file tmpfs }:file ioctl { 0xf50c };
   allowxperm recovery { block_device dm_device }:blk_file ioctl { 0x1260 0x4c01 0x5331 };
   allowxperm recovery misc_block_device:blk_file ioctl { 0x1260 };
+  # TWRP format/image size checks use BLKGETSIZE on GPT-specific block labels too.
+  allowxperm recovery { boot_block_device super_block_device metadata_block_device
+                        userdata_block_device cache_block_device }:blk_file ioctl BLKGETSIZE;
   # Attach/read/detach read-only APEX payload files with loop devices.
   allowxperm recovery loop_device:blk_file ioctl {
     LOOP_SET_FD LOOP_CLR_FD LOOP_SET_STATUS64 LOOP_GET_STATUS64
@@ -206,4 +236,6 @@ recovery_only(`
   allow init self:global_capability_class_set sys_module;
   allow init rootfs:system module_load;
   allow ueventd self:global_capability_class_set sys_nice;
+  # Installer keycheck binaries open evdev nodes with O_RDWR.
+  allow recovery input_device:chr_file rw_file_perms;
 ')
